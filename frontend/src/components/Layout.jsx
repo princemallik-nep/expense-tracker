@@ -11,7 +11,7 @@ const NAV = [
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -50,9 +50,50 @@ export default function Layout() {
           </button>
         </div>
       </aside>
+
+      {/* Mobile top header */}
+      <header className="mobile-header">
+        <div className="mobile-logo">
+          <span className="logo-icon">⬡</span>
+          <span className="logo-text">ExpenseTrack</span>
+        </div>
+        <div className="mobile-user" onClick={() => setShowUserMenu(!showUserMenu)}>
+          <div className="user-avatar">{user?.name?.[0]?.toUpperCase()}</div>
+        </div>
+        {showUserMenu && (
+          <div className="mobile-user-menu">
+            <div className="mobile-user-info">
+              <span className="user-name">{user?.name}</span>
+              <span className="user-email">{user?.email}</span>
+            </div>
+            <button className="mobile-logout-btn" onClick={handleLogout}>
+              Sign out
+            </button>
+          </div>
+        )}
+      </header>
+
       <main className="main-content">
         <Outlet />
       </main>
+
+      {/* Mobile bottom nav */}
+      <nav className="mobile-nav">
+        {NAV.map(n => (
+          <NavLink
+            key={n.to}
+            to={n.to}
+            className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+          >
+            <span className="nav-icon">{n.icon}</span>
+            <span>{n.label}</span>
+          </NavLink>
+        ))}
+        <button className="mobile-nav-item mobile-nav-logout" onClick={handleLogout}>
+          <span className="nav-icon">⇥</span>
+          <span>Logout</span>
+        </button>
+      </nav>
     </div>
   );
 }
